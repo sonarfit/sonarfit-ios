@@ -30,18 +30,19 @@ Complete guide for integrating the SonarFit AI fitness tracking SDK into your iO
 
 ### 1. Privacy Permissions
 
-Add these entries to your `Info.plist`:
+Add to your `Info.plist`:
 
 ```xml
 <key>NSMotionUsageDescription</key>
-<string>This app uses motion data to track workout form and repetitions during fitness sessions</string>
+<string>This app uses motion sensors to track your workout reps and provide real-time feedback</string>
+```
 
-<key>NSMicrophoneUsageDescription</key>
-<string>This app uses microphone access to provide real-time audio feedback during workouts</string>
-
-<!-- Optional: For enhanced tracking -->
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Location access helps improve workout accuracy and environmental context</string>
+For Watch App, also add:
+```xml
+<key>WKBackgroundModes</key>
+<array>
+    <string>workout-processing</string>
+</array>
 ```
 
 ### 2. Initialize SDK
@@ -52,7 +53,16 @@ import SonarFitSDK
 @main
 struct MyFitnessApp: App {
     init() {
-        SonarFitSDK.initialize()
+        // Initialize with your API key
+        SonarFitSDK.initialize(apiKey: "sk_live_your_api_key_here") { success, error in
+            if success {
+                print("✅ SonarFit SDK initialized")
+                // Optional: Configure additional settings
+                SonarFitSDK.configure(debugMode: true)
+            } else {
+                print("❌ SDK init failed: \(error?.localizedDescription ?? "Unknown")")
+            }
+        }
     }
 
     var body: some Scene {
@@ -60,7 +70,6 @@ struct MyFitnessApp: App {
             ContentView()
         }
     }
-}
 ```
 
 ## 💪 Workout Integration
@@ -127,7 +136,7 @@ WorkoutConfig(
 
 - `.squat` - Squat exercises
 - `.benchPress` - Bench press exercises
-- More types coming soon...
+- `.deadlift` - Deadlift exercises
 
 ### Device Types
 
@@ -137,14 +146,32 @@ WorkoutConfig(
 
 ## 🎨 Theming (Optional)
 
-Customize the SDK appearance:
+Customize the SDK appearance with your brand colors:
 
 ```swift
-// Apply custom theme globally
-SonarFitTheme.apply()
+// Create custom theme
+let customTheme = SonarFitTheme(
+    colors: SonarFitTheme.Colors(
+        primary: UIColor.systemBlue,      // Main accent color
+        accent: UIColor.systemTeal,       // Secondary accent
+        background: UIColor.systemBackground,
+        textPrimary: UIColor.label,
+        textSecondary: UIColor.secondaryLabel,
+        success: UIColor.systemGreen,     // Rep completion
+        error: UIColor.systemRed          // Error states
+    ),
+    typography: SonarFitTheme.Typography(
+        titleFont: UIFont.systemFont(ofSize: 20, weight: .semibold),
+        bodyFont: UIFont.systemFont(ofSize: 16, weight: .regular),
+        captionFont: UIFont.systemFont(ofSize: 12, weight: .regular)
+    )
+)
 
-// Or use default theme
-SonarFitTheme.useDefault()
+// Configure SDK with custom theme
+SonarFitSDK.configure(theme: customTheme, debugMode: false)
+
+// Or update theme at runtime
+SonarFitSDK.updateTheme(customTheme)
 ```
 
 ## ⌚ Apple Watch Integration (Optional)
@@ -153,23 +180,37 @@ SonarFitTheme.useDefault()
 
 1. **File** → **New** → **Target** → **Watch App**
 2. **Add SonarFitSDK** to Watch App target
-3. **Import in WatchKit Extension**:
+
+### 2. Enable SonarFit in Your Watch App
+
+For existing Watch apps, add one line:
 
 ```swift
+import SwiftUI
 import SonarFitSDK
 
-// Initialize in Watch App
-SonarFitSDK.configureWatch()
+struct ContentView: View {
+    var body: some View {
+        Text("My Watch App")
+            .enableSonarFitWorkouts()  // ← Add this line!
+    }
+}
 ```
 
-### 2. Enable Watch Connectivity
+For dedicated fitness Watch apps:
 
 ```swift
-// In your iOS app
-SonarFitSDK.enableWatchConnectivity()
+import SwiftUI
+import SonarFitSDK
+
+struct ContentView: View {
+    var body: some View {
+        SonarFitWatchMainView()  // Complete workout interface
+    }
+}
 ```
 
-The watch app will automatically sync workout data and provide haptic feedback during exercises.
+The watch app will automatically sync workout data with iPhone and provide haptic feedback during exercises.
 
 ---
 

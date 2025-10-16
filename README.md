@@ -24,17 +24,32 @@ In Xcode:
 ```swift
 import SonarFitSDK
 
-// In your App struct or main view
-SonarFitSDK.initialize()
+@main
+struct MyApp: App {
+    init() {
+        // Initialize with your API key
+        SonarFitSDK.initialize(apiKey: "sk_live_your_api_key_here") { success, error in
+            if success {
+                print("✅ SonarFit SDK initialized")
+            } else {
+                print("❌ SDK init failed: \(error?.localizedDescription ?? "Unknown")")
+            }
+        }
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
 ```
 
 ### 2. Add Privacy Permissions
 Add to your `Info.plist`:
 ```xml
 <key>NSMotionUsageDescription</key>
-<string>This app uses motion data to track workout form and repetitions</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>This app uses microphone to provide audio feedback during workouts</string>
+<string>This app uses motion sensors to track your workout reps and provide real-time feedback</string>
 ```
 
 ### 3. Basic Workout Integration
@@ -77,13 +92,7 @@ struct ContentView: View {
 }
 ```
 
-### 4. Theming (Optional)
-```swift
-// Apply custom theme
-SonarFitTheme.apply()
-```
-
-### 5. Check SDK Version
+### 4. Check SDK Version
 ```swift
 print("SonarFit SDK Version: \(SonarFitSDKVersion.current)")
 ```

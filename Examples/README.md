@@ -13,7 +13,11 @@ import SonarFitSDK
 @main
 struct TestApp: App {
     init() {
-        SonarFitSDK.initialize()
+        SonarFitSDK.initialize(apiKey: "sk_live_your_api_key_here") { success, error in
+            if success {
+                print("✅ SDK initialized")
+            }
+        }
     }
 
     var body: some Scene {
