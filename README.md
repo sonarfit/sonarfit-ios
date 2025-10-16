@@ -18,24 +18,58 @@ In Xcode:
 2. Drag into your Xcode project and select "Copy items if needed"
 3. Set to "Embed & Sign" in Project Settings → General → Frameworks
 
-## 💻 Basic Usage
+## 💻 Setup & Usage
 
+### 1. Initialize SDK
+```swift
+import SonarFitSDK
+
+// In your App struct or main view
+SonarFitSDK.initialize()
+```
+
+### 2. Add Privacy Permissions
+Add to your `Info.plist`:
+```xml
+<key>NSMotionUsageDescription</key>
+<string>This app uses motion data to track workout form and repetitions</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>This app uses microphone to provide audio feedback during workouts</string>
+```
+
+### 3. Basic Workout Integration
 ```swift
 import SwiftUI
 import SonarFitSDK
 
 struct ContentView: View {
+    @State private var showWorkout = false
+
     var body: some View {
         VStack {
-            Text("My Fitness App")
-
             Button("Start Workout") {
-                // Launch SonarFit SDK UI
+                showWorkout = true
             }
             .sonarFitWorkout(
-                workoutType: .benchPress,
-                onComplete: { result in
-                    print("Workout completed: \(result)")
+                config: WorkoutConfig(
+                    workoutType: .squat,
+                    sets: 3,
+                    reps: 10,
+                    restTime: 60,
+                    countdownDuration: 3,
+                    autoReLift: false,
+                    deviceType: .airpods
+                ),
+                isPresented: $showWorkout,
+                onCompletion: { result in
+                    guard let result = result else {
+                        print("Workout dismissed")
+                        return
+                    }
+                    print("Workout completed: \(result.status)")
+                },
+                onPermissionError: { error in
+                    print("Permission error: \(error.localizedDescription)")
                 }
             )
         }
@@ -43,7 +77,13 @@ struct ContentView: View {
 }
 ```
 
-### Check SDK Version
+### 4. Theming (Optional)
+```swift
+// Apply custom theme
+SonarFitTheme.apply()
+```
+
+### 5. Check SDK Version
 ```swift
 print("SonarFit SDK Version: \(SonarFitSDKVersion.current)")
 ```

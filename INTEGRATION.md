@@ -1,76 +1,175 @@
 # SonarFit SDK Integration Guide
 
-## 🚀 Quick Start
+Complete guide for integrating the SonarFit AI fitness tracking SDK into your iOS application.
 
-### Method 1: Manual XCFramework (Recommended for Testing)
+## 📋 Prerequisites
 
-1. Create a new iOS App project in Xcode
-2. Copy `SonarFitSDK.xcframework` to your project directory
-3. Drag `SonarFitSDK.xcframework` into your Xcode project
-4. Select "Copy items if needed"
-5. In Project Settings → General → "Frameworks, Libraries, and Embedded Content"
-6. Set to "Embed & Sign"
+- **iOS 17.0+**
+- **Xcode 15.0+**
+- **Swift 5.9+**
 
-### Method 2: Swift Package Manager (When Published)
+## 🚀 Installation
 
-#### In Xcode:
-1. **File** → **Add Package Dependencies**
-2. Enter URL: `https://github.com/your-org/SonarFitSDK-Binary`
-3. Select version: `1.0.0` (or latest)
-4. Add to your target
+### Method 1: Swift Package Manager (Recommended)
 
-#### In Package.swift (for library targets only):
-```swift
-dependencies: [
-    .package(url: "https://github.com/your-org/SonarFitSDK-Binary", from: "1.0.0")
-],
-targets: [
-    .target(
-        name: "YourLibrary",
-        dependencies: ["SonarFitSDK"]
-    )
-]
+1. **In Xcode**: File → Add Package Dependencies
+2. **Enter URL**: `https://github.com/sonarfit/sonarfit-ios`
+3. **Dependency Rule**: "Up to Next Major Version"
+4. **Version**: `1.0.0` (or latest)
+5. **Add to Target**: Select your app target
+
+### Method 2: Manual XCFramework
+
+1. Download `SonarFitSDK.xcframework.zip` from [Releases](https://github.com/sonarfit/sonarfit-ios/releases)
+2. Unzip and drag `SonarFitSDK.xcframework` into your Xcode project
+3. Select "Copy items if needed"
+4. Project Settings → General → "Frameworks, Libraries, and Embedded Content"
+5. Set framework to "Embed & Sign"
+
+## ⚙️ Configuration
+
+### 1. Privacy Permissions
+
+Add these entries to your `Info.plist`:
+
+```xml
+<key>NSMotionUsageDescription</key>
+<string>This app uses motion data to track workout form and repetitions during fitness sessions</string>
+
+<key>NSMicrophoneUsageDescription</key>
+<string>This app uses microphone access to provide real-time audio feedback during workouts</string>
+
+<!-- Optional: For enhanced tracking -->
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Location access helps improve workout accuracy and environmental context</string>
 ```
 
-**Note**: SPM with XCFramework works best for library targets, not iOS app targets.
+### 2. Initialize SDK
 
----
-
-## 💻 Basic Usage
-
-### Import the SDK
 ```swift
 import SonarFitSDK
-```
 
-### Start a Workout
-```swift
-import SwiftUI
-import SonarFitSDK
+@main
+struct MyFitnessApp: App {
+    init() {
+        SonarFitSDK.initialize()
+    }
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Text("My Fitness App")
-
-            Button("Start Workout") {
-                // Launch SonarFit SDK UI
-            }
-            .sonarFitWorkout(
-                workoutType: .benchPress,
-                onComplete: { result in
-                    print("Workout completed: \(result)")
-                }
-            )
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
         }
     }
 }
 ```
 
-### Check SDK Version
+## 💪 Workout Integration
+
+### Basic Workout Setup
+
 ```swift
-print("SonarFit SDK Version: \(SonarFitSDKVersion.current)")
+import SwiftUI
+import SonarFitSDK
+
+struct ContentView: View {
+    @State private var showWorkout = false
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Button("Start Squat Workout") {
+                showWorkout = true
+            }
+            .sonarFitWorkout(
+                config: WorkoutConfig(
+                    workoutType: .squat,
+                    sets: 3,
+                    reps: 10,
+                    restTime: 60,
+                    countdownDuration: 3,
+                    autoReLift: false,
+                    deviceType: .airpods
+                ),
+                isPresented: $showWorkout,
+                onCompletion: { result in
+                    guard let result = result else {
+                        print("Workout dismissed")
+                        return
+                    }
+                    print("Workout completed: \(result.status)")
+                    // Handle workout results
+                },
+                onPermissionError: { error in
+                    print("Permission error: \(error.localizedDescription)")
+                    // Handle permission issues
+                }
+            )
+        }
+        .padding()
+    }
+}
 ```
+
+### Workout Configuration Options
+
+```swift
+WorkoutConfig(
+    workoutType: .squat,          // .squat, .benchPress, etc.
+    sets: 3,                      // Number of sets
+    reps: 10,                     // Reps per set
+    restTime: 60,                 // Rest between sets (seconds)
+    countdownDuration: 3,         // Countdown before starting (seconds)
+    autoReLift: false,           // Auto-detect rep completion
+    deviceType: .airpods         // .airpods, .phone, .watch
+)
+```
+
+### Available Workout Types
+
+- `.squat` - Squat exercises
+- `.benchPress` - Bench press exercises
+- More types coming soon...
+
+### Device Types
+
+- `.airpods` - Use AirPods for enhanced tracking
+- `.phone` - Use iPhone sensors
+- `.watch` - Use Apple Watch (requires watch app)
+
+## 🎨 Theming (Optional)
+
+Customize the SDK appearance:
+
+```swift
+// Apply custom theme globally
+SonarFitTheme.apply()
+
+// Or use default theme
+SonarFitTheme.useDefault()
+```
+
+## ⌚ Apple Watch Integration (Optional)
+
+### 1. Add Watch App Target
+
+1. **File** → **New** → **Target** → **Watch App**
+2. **Add SonarFitSDK** to Watch App target
+3. **Import in WatchKit Extension**:
+
+```swift
+import SonarFitSDK
+
+// Initialize in Watch App
+SonarFitSDK.configureWatch()
+```
+
+### 2. Enable Watch Connectivity
+
+```swift
+// In your iOS app
+SonarFitSDK.enableWatchConnectivity()
+```
+
+The watch app will automatically sync workout data and provide haptic feedback during exercises.
 
 ---
 
@@ -79,6 +178,7 @@ print("SonarFit SDK Version: \(SonarFitSDKVersion.current)")
 - **iOS 17.0+**
 - **Xcode 15.0+**
 - **Swift 5.9+**
+- **Optional**: Apple Watch (watchOS 10.0+)
 
 ---
 
