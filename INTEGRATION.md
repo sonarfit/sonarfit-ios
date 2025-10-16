@@ -30,20 +30,31 @@ Complete guide for integrating the SonarFit AI fitness tracking SDK into your iO
 
 ### 1. Privacy Permissions
 
-Add to your `Info.plist`:
+In Xcode, select your app target → **Info** tab → **Custom iOS Target Properties**:
 
-```xml
-<key>NSMotionUsageDescription</key>
-<string>This app uses motion sensors to track your workout reps and provide real-time feedback</string>
-```
+1. Click **+** to add new key
+2. Key: `Privacy - Motion Usage Description`
+3. Value: `This app uses motion sensors to track your workout reps and provide real-time feedback`
 
-For Watch App, also add:
-```xml
-<key>WKBackgroundModes</key>
-<array>
-    <string>workout-processing</string>
-</array>
-```
+## ⚙️ Required Setup
+
+### iPhone App (Required)
+
+**Capabilities** - In your iOS app target, enable:
+- ☑️ Background Modes (Background fetch + Background processing)
+- ☑️ HealthKit (HealthKit Background Delivery)
+
+### Apple Watch Integration (Optional)
+
+**If you want Apple Watch support:**
+
+1. **Add Watch App target** to your project
+2. **Add SonarFitSDK** to Watch App target
+3. **Enable Watch App capabilities:**
+   - ☑️ Background Modes (Workout processing, type: Self Care)
+   - ☑️ HealthKit (HealthKit Background Delivery)
+
+**If you only use AirPods:** Skip the Watch App setup entirely.
 
 ### 2. Initialize SDK
 
@@ -127,10 +138,15 @@ WorkoutConfig(
     reps: 10,                     // Reps per set
     restTime: 60,                 // Rest between sets (seconds)
     countdownDuration: 3,         // Countdown before starting (seconds)
-    autoReLift: false,           // Auto-detect rep completion
-    deviceType: .airpods         // .airpods, .phone, .watch
+    autoReLift: false,           // Auto-start lifting when rest timer completes
+    deviceType: .airpods         // .airpods or .watch
 )
 ```
+
+### autoReLift Parameter
+
+- **`true`**: Automatically starts the next set when rest timer completes
+- **`false`**: User must tap "Start" on watch or phone to begin next set
 
 ### Available Workout Types
 
@@ -140,9 +156,8 @@ WorkoutConfig(
 
 ### Device Types
 
-- `.airpods` - Use AirPods for enhanced tracking
-- `.phone` - Use iPhone sensors
-- `.watch` - Use Apple Watch (requires watch app)
+- `.airpods` - Use AirPods motion sensors (recommended)
+- `.watch` - Use Apple Watch sensors (requires watch app)
 
 ## 🎨 Theming (Optional)
 
@@ -214,12 +229,153 @@ The watch app will automatically sync workout data with iPhone and provide hapti
 
 ---
 
+## 📚 API Reference
+
+### WorkoutConfig
+
+Configuration object for workout sessions:
+
+```swift
+struct WorkoutConfig {
+    let workoutType: WorkoutType       // Exercise type
+    let sets: Int                      // Number of sets
+    let reps: Int                      // Target reps per set
+    let restTime: TimeInterval         // Rest between sets (seconds)
+    let countdownDuration: TimeInterval // Countdown before each set
+    let autoReLift: Bool              // Auto-start next set after rest
+    let deviceType: DeviceType        // Motion sensor device
+}
+```
+
+### WorkoutType
+
+Available exercise types:
+
+```swift
+enum WorkoutType {
+    case squat      // Squat exercises
+    case benchPress // Bench press exercises
+    case deadlift   // Deadlift exercises
+}
+```
+
+### DeviceType
+
+Motion sensor options:
+
+```swift
+enum DeviceType {
+    case airpods    // AirPods motion sensors
+    case watch      // Apple Watch sensors
+}
+```
+
+### WorkoutResult
+
+Workout completion data:
+
+```swift
+struct WorkoutResult {
+    let workoutType: WorkoutType
+    let status: WorkoutStatus
+    let completionPercentage: Double    // 0.0 - 1.0
+    let totalRepsCompleted: Int
+    let totalTargetReps: Int
+    let totalDuration: TimeInterval     // Total workout time
+    let setResults: [SetResult]         // Per-set breakdown
+}
+```
+
+### WorkoutStatus
+
+Workout completion states:
+
+```swift
+enum WorkoutStatus {
+    case completed      // Workout finished successfully
+    case cancelled      // User cancelled workout
+    case error(Error)   // Workout failed with error
+}
+```
+
+### SetResult
+
+Individual set performance:
+
+```swift
+struct SetResult {
+    let setNumber: Int
+    let targetReps: Int
+    let completedReps: Int
+    let duration: TimeInterval
+    let restDuration: TimeInterval?
+}
+```
+
+### SonarFitSDK Class
+
+Main SDK interface:
+
+```swift
+class SonarFitSDK {
+    // Initialize SDK with API key
+    static func initialize(apiKey: String, completion: @escaping (Bool, Error?) -> Void)
+
+    // Configure SDK options
+    static func configure(theme: SonarFitTheme? = nil, debugMode: Bool = false)
+
+    // Update theme at runtime
+    static func updateTheme(_ theme: SonarFitTheme)
+
+    // Enable debug logging
+    static var enableDebugLogging: Bool { get set }
+}
+```
+
+### Error Handling
+
+SDK error types:
+
+```swift
+enum SDKError: Error {
+    case invalidAPIKey              // API key format incorrect
+    case networkError(Error)        // Network connectivity issues
+    case permissionDenied          // Motion permissions not granted
+    case deviceNotSupported        // Device doesn't support selected type
+    case workoutInProgress         // Another workout already active
+}
+```
+
+### SonarFitTheme
+
+Customize SDK appearance:
+
+```swift
+struct SonarFitTheme {
+    let colors: Colors
+    let typography: Typography
+
+    struct Colors {
+        let primary: UIColor        // Main accent color
+        let accent: UIColor         // Secondary accent
+        let background: UIColor     // Background color
+        let textPrimary: UIColor    // Primary text
+        let textSecondary: UIColor  // Secondary text
+        let success: UIColor        // Success states
+        let error: UIColor          // Error states
+    }
+}
+```
+
+---
+
 ## 📋 Requirements
 
 - **iOS 17.0+**
 - **Xcode 15.0+**
 - **Swift 5.9+**
-- **Optional**: Apple Watch (watchOS 10.0+)
+- **AirPods or Apple Watch** for motion tracking
+- **Valid API Key** from SonarFit
 
 ---
 

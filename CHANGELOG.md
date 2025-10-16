@@ -27,13 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Architecture**: arm64 (device), arm64 + x86_64 (simulator)
 - **Distribution**: XCFramework via Swift Package Manager
 
-### Included Components
-- 5 compiled ML models (.mlmodelc)
-- Audio resources for workout guidance
-- Complete SwiftUI workout interface
-- Version tracking and SDK information
-- Comprehensive error handling and logging
-
 ### Known Issues
 - None at initial release
 

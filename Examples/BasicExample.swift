@@ -1,21 +1,15 @@
-# SonarFit iOS SDK Examples
-
-Example projects demonstrating how to integrate and use the SonarFit iOS SDK.
-
-## 🚀 Quick Test Example
-
-Create a new iOS app and test the SDK integration:
-
-```swift
 import SwiftUI
 import SonarFitSDK
 
 @main
-struct TestApp: App {
+struct BasicExampleApp: App {
     init() {
+        // Initialize SDK with your API key
         SonarFitSDK.initialize(apiKey: "sk_live_your_api_key_here") { success, error in
             if success {
-                print("✅ SDK initialized")
+                print("✅ SonarFit SDK initialized")
+            } else {
+                print("❌ SDK init failed: \(error?.localizedDescription ?? "Unknown")")
             }
         }
     }
@@ -32,30 +26,37 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("SonarFit SDK Test")
+            Text("SonarFit SDK Example")
                 .font(.largeTitle)
+                .padding()
 
             Text("Version: \(SonarFitSDKVersion.current)")
                 .font(.caption)
                 .foregroundColor(.secondary)
 
-            Button("Start Test Workout") {
+            Button("Start Squat Workout") {
                 showWorkout = true
             }
             .buttonStyle(.borderedProminent)
             .sonarFitWorkout(
                 config: WorkoutConfig(
                     workoutType: .squat,
-                    sets: 2,
-                    reps: 5,
-                    restTime: 30,
+                    sets: 3,
+                    reps: 10,
+                    restTime: 60,
                     countdownDuration: 3,
                     autoReLift: false,
-                    deviceType: .phone
+                    deviceType: .airpods
                 ),
                 isPresented: $showWorkout,
                 onCompletion: { result in
-                    print("Test workout completed: \(result?.status ?? "dismissed")")
+                    guard let result = result else {
+                        print("Workout dismissed")
+                        return
+                    }
+                    print("Workout completed: \(result.status)")
+                    print("Reps: \(result.totalRepsCompleted)/\(result.totalTargetReps)")
+                    print("Completion: \(Int(result.completionPercentage * 100))%")
                 },
                 onPermissionError: { error in
                     print("Permission error: \(error.localizedDescription)")
@@ -65,22 +66,7 @@ struct ContentView: View {
         .padding()
     }
 }
-```
 
-## 📋 Setup Steps
-
-1. **Add Package**: `https://github.com/sonarfit/sonarfit-ios`
-2. **Add Privacy Permissions**: See [Integration Guide](../INTEGRATION.md)
-3. **Copy Example**: Use code above
-4. **Test**: Run on device/simulator
-
-## 📱 Full Examples Coming Soon
-
-- **BasicIntegration** - Complete app with multiple workout types
-- **WorkoutCustomization** - Advanced configuration options
-- **WatchApp** - Watch connectivity integration
-
-## 📞 Need Help?
-
-- [Integration Guide](../INTEGRATION.md)
-- [Issues](https://github.com/sonarfit/sonarfit-ios/issues)
+#Preview {
+    ContentView()
+}

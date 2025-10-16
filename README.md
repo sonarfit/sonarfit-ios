@@ -2,99 +2,33 @@
 
 AI-powered fitness tracking and workout analysis SDK for iOS applications.
 
-## 🚀 Quick Start
+## 🏋️ What is SonarFit?
 
-### Swift Package Manager
+Transform any iOS app into a smart fitness coach with AI-powered motion tracking. SonarFit automatically detects and counts exercise reps using AirPods Pro/Max or Apple Watch sensors, providing real-time feedback for squats, bench press, and deadlifts (more to follow).
 
-In Xcode:
-1. **File** → **Add Package Dependencies**
-2. Enter URL: `https://github.com/sonarfit/sonarfit-ios`
-3. Select version: `1.0.0` (or latest)
-4. Add to your target
+## ✨ Features
 
-### Manual XCFramework
+- **🤖 AI-Powered Rep Counting** - Automatic rep detection and counting
+- **📱 Multi-Device Support** - AirPods Pro, AirPods Max and Apple Watch integration
+- **⏱️ Smart Rest Timers** - Built-in rest periods between sets
+- **🔄 Watch Connectivity** - Seamless iPhone-Watch workout sync
+- **🎨 Pre-built UI** - Ready-to-use SwiftUI workout interfaces
 
-1. Download `SonarFitSDK.xcframework.zip` from [Releases](https://github.com/sonarfit/sonarfit-ios/releases)
-2. Drag into your Xcode project and select "Copy items if needed"
-3. Set to "Embed & Sign" in Project Settings → General → Frameworks
+## 🚀 Quick Integration
 
-## 💻 Setup & Usage
-
-### 1. Initialize SDK
 ```swift
-import SonarFitSDK
-
-@main
-struct MyApp: App {
-    init() {
-        // Initialize with your API key
-        SonarFitSDK.initialize(apiKey: "sk_live_your_api_key_here") { success, error in
-            if success {
-                print("✅ SonarFit SDK initialized")
-            } else {
-                print("❌ SDK init failed: \(error?.localizedDescription ?? "Unknown")")
-            }
-        }
-    }
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
+Button("Start Workout") { showWorkout = true }
+.sonarFitWorkout(
+    config: WorkoutConfig(
+        workoutType: .squat,
+        sets: 3,
+        reps: 10,
+        deviceType: .airpods
+    ),
+    isPresented: $showWorkout
+) { result in
+    print("Workout completed!")
 }
-```
-
-### 2. Add Privacy Permissions
-Add to your `Info.plist`:
-```xml
-<key>NSMotionUsageDescription</key>
-<string>This app uses motion sensors to track your workout reps and provide real-time feedback</string>
-```
-
-### 3. Basic Workout Integration
-```swift
-import SwiftUI
-import SonarFitSDK
-
-struct ContentView: View {
-    @State private var showWorkout = false
-
-    var body: some View {
-        VStack {
-            Button("Start Workout") {
-                showWorkout = true
-            }
-            .sonarFitWorkout(
-                config: WorkoutConfig(
-                    workoutType: .squat,
-                    sets: 3,
-                    reps: 10,
-                    restTime: 60,
-                    countdownDuration: 3,
-                    autoReLift: false,
-                    deviceType: .airpods
-                ),
-                isPresented: $showWorkout,
-                onCompletion: { result in
-                    guard let result = result else {
-                        print("Workout dismissed")
-                        return
-                    }
-                    print("Workout completed: \(result.status)")
-                },
-                onPermissionError: { error in
-                    print("Permission error: \(error.localizedDescription)")
-                }
-            )
-        }
-    }
-}
-```
-
-### 4. Check SDK Version
-```swift
-print("SonarFit SDK Version: \(SonarFitSDKVersion.current)")
 ```
 
 ## 📋 Requirements
@@ -102,36 +36,30 @@ print("SonarFit SDK Version: \(SonarFitSDKVersion.current)")
 - **iOS 17.0+**
 - **Xcode 15.0+**
 - **Swift 5.9+**
+- **AirPods Pro/Max or Apple Watch** (for motion tracking)
 
-## 🏋️ Features
+## 🛠️ Supported Exercises
 
-- AI-powered exercise recognition
-- Real-time form analysis
-- Multiple workout types supported
-- Comprehensive workout tracking
-- SwiftUI integration
+- Squats 
+- Bench Press 
+- Deadlifts
 
-## 📖 Documentation
+## 📖 Get Started
 
-- [Integration Guide](https://github.com/sonarfit/sonarfit-ios/blob/main/INTEGRATION.md)
-- [API Reference](https://sonarfit.github.io/sonarfit-ios/)
-- [Example Projects](https://github.com/sonarfit/sonarfit-ios/tree/main/Examples)
+**Ready to integrate?** Follow our complete setup guide:
 
-## 🔧 Troubleshooting
+👉 **[Integration Guide](INTEGRATION.md)** - Everything you need to get started
 
-### Common Issues
-- Ensure deployment target is iOS 17.0+
-- Clean build folder if needed
-- Verify framework is "Embed & Sign"
+**Want to see it in action?** Check out working examples:
 
-See [Integration Guide](https://github.com/sonarfit/sonarfit-ios/blob/main/INTEGRATION.md) for detailed troubleshooting.
+👉 **[Example Code](Examples/)** - Copy-paste ready code
 
-## 📞 Support
+## 📞 Support & Resources
 
-- 🐛 [Issues](https://github.com/sonarfit/sonarfit-ios/issues)
-- 📧 Email: support@sonarfit.com
-- 📚 [Documentation](https://sonarfit.github.io/sonarfit-ios/)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/sonarfit/sonarfit-ios/issues)
+- 📚 **Documentation**: [Complete API Reference](https://sonarfit.github.io/sonarfit-ios/)
+- 📧 **Support**: support@sonarfit.com
 
 ## 📄 License
 
-© 2024 SonarFit. All rights reserved.
+© 2025 SonarFit. All rights reserved.
