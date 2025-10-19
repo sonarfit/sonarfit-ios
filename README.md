@@ -31,10 +31,32 @@ Button("Start Workout") { showWorkout = true }
 }
 ```
 
+## 📦 Installation
+
+### Swift Package Manager (Recommended)
+
+1. In Xcode, select **File → Add Package Dependencies...**
+2. Enter the repository URL:
+   ```
+   https://github.com/sonarfit/sonarfit-ios
+   ```
+3. Select **Version** → **Up to Next Major** → **1.1.0**
+4. Click **Add Package**
+5. Select **SonarFitKit** from the product list
+6. Click **Add Package**
+
+That's it! The SDK and all dependencies are automatically configured.
+
+### Import
+
+```swift
+import SonarFitKit  // Single import - that's all you need!
+```
+
 ## 📋 Requirements
 
-- **iOS 17.0+**
-- **Xcode 15.0+**
+- **iOS 17.0+** / **watchOS 10.0+**
+- **Xcode 16.0+**
 - **Swift 5.9+**
 - **AirPods Pro/Max or Apple Watch** (for motion tracking)
 

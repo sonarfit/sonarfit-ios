@@ -5,6 +5,31 @@ All notable changes to the SonarFit iOS SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-10-19
+
+### Changed
+- **Simplified installation**: SDK now installs via Swift Package Manager with zero manual configuration
+- **One-step setup**: Add package dependency and you're done
+- Single `import SonarFitKit` statement provides access to all SDK functionality
+
+### Improved
+- Installation process - streamlined to one package addition
+- Build times and dependency management
+- Integration documentation
+
+### Requirements
+- **Platforms**: iOS 17.0+, watchOS 10.0+
+- **Xcode**: 16.0+
+- **Swift**: 5.9+
+
+### Migration from v1.0.x
+- **No code changes required** - API is fully backward compatible
+- **Installation**: Use SPM package dependency instead of manual framework embedding
+- **Import**: Still just `import SonarFitKit`
+
+### Breaking Changes
+- None - fully backward compatible with v1.0.x
+
 ## [1.0.2] - 2024-10-16
 
 ### Fixed

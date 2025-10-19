@@ -1,5 +1,5 @@
 import SwiftUI
-import SonarFitSDK
+import SonarFitKit
 
 @main
 struct BasicExampleApp: App {
@@ -7,9 +7,9 @@ struct BasicExampleApp: App {
         // Initialize SDK with your API key
         SonarFitSDK.initialize(apiKey: "sk_live_your_api_key_here") { success, error in
             if success {
-                print("✅ SonarFit SDK initialized")
+                print("SonarFit SDK initialized")
             } else {
-                print("❌ SDK init failed: \(error?.localizedDescription ?? "Unknown")")
+                print("SDK init failed: \(error?.localizedDescription ?? "Unknown")")
             }
         }
     }
@@ -29,10 +29,6 @@ struct ContentView: View {
             Text("SonarFit SDK Example")
                 .font(.largeTitle)
                 .padding()
-
-            Text("Version: \(SonarFitSDKVersion.current)")
-                .font(.caption)
-                .foregroundColor(.secondary)
 
             Button("Start Squat Workout") {
                 showWorkout = true
