@@ -34,6 +34,21 @@ Complete guide to integrating the SonarFit SDK into your iOS and watchOS applica
 - **Xcode 16.0+**
 - **Swift 5.9+**
 - **AirPods Pro/Max** or **Apple Watch** (for motion tracking)
+- **HealthKit capability** (required for workout session management)
+- **Background Modes** (required for continuous tracking)
+
+### Quick Setup Checklist
+
+**iOS App:**
+- ✅ Add NSMotionUsageDescription to Info.plist
+- ✅ Enable HealthKit capability (with Background Delivery)
+- ✅ Add Background Modes: fetch, processing
+- ✅ Import SonarFitKit in your code
+
+**watchOS App (if applicable):**
+- ✅ Enable HealthKit capability (with Background Delivery)
+- ✅ Add WKBackgroundModes: self-care, workout-processing
+- ✅ Import SonarFitKit in your code
 
 ## Quick Start
 
@@ -77,20 +92,82 @@ struct YourApp: App {
 }
 ```
 
-### 2. Add Permissions
+### 2. Configure iOS App Requirements
 
-Add these to your **Info.plist**:
+**A. Add Privacy Usage Description**
+
+Add to your **Info.plist** or target settings:
 
 ```xml
 <key>NSMotionUsageDescription</key>
-<string>We use motion sensors to count your workout reps</string>
-
-<key>NSHealthShareUsageDescription</key>
-<string>We use HealthKit to track your workouts</string>
-
-<key>NSHealthUpdateUsageDescription</key>
-<string>We save workout data to HealthKit</string>
+<string>This app uses motion sensors to track your workout reps and provide real-time feedback</string>
 ```
+
+**B. Enable HealthKit Capability**
+
+1. Select your iOS app target
+2. Go to **Signing & Capabilities**
+3. Click **+ Capability**
+4. Add **HealthKit**
+5. Enable **Background Delivery** under HealthKit
+
+**C. Add Background Modes**
+
+In your **Info.plist**:
+
+```xml
+<key>UIBackgroundModes</key>
+<array>
+    <string>fetch</string>
+    <string>processing</string>
+</array>
+```
+
+**D. Entitlements**
+
+Your app should have these entitlements (automatically added when you enable HealthKit):
+
+```xml
+<key>com.apple.developer.healthkit</key>
+<true/>
+<key>com.apple.developer.healthkit.background-delivery</key>
+<true/>
+```
+
+### 3. Configure watchOS App Requirements (If Using Watch)
+
+**A. Enable HealthKit Capability**
+
+1. Select your Watch app target
+2. Go to **Signing & Capabilities**
+3. Click **+ Capability**
+4. Add **HealthKit**
+5. Enable **Background Delivery** under HealthKit
+
+**B. Add Watch Background Modes**
+
+In your **Watch App Info.plist**:
+
+```xml
+<key>WKBackgroundModes</key>
+<array>
+    <string>self-care</string>
+    <string>workout-processing</string>
+</array>
+```
+
+**C. Watch Entitlements**
+
+Your Watch app should have these entitlements (automatically added when you enable HealthKit):
+
+```xml
+<key>com.apple.developer.healthkit</key>
+<true/>
+<key>com.apple.developer.healthkit.background-delivery</key>
+<true/>
+```
+
+**Note:** watchOS apps do NOT need NSMotionUsageDescription
 
 ## iOS Integration
 
@@ -377,10 +454,16 @@ Make sure you've added the package dependency and selected **SonarFitKit** from 
 
 ### Motion Tracking Not Working
 
-1. Ensure permissions are granted in Info.plist
-2. Check that AirPods Pro/Max or Apple Watch are connected
-3. Verify correct `deviceType` in WorkoutConfig
-4. Enable debug mode to see sensor status:
+1. **Verify iOS requirements:**
+   - NSMotionUsageDescription added to Info.plist
+   - HealthKit capability enabled with Background Delivery
+   - Background Modes (fetch, processing) added to Info.plist
+2. **Verify watchOS requirements (if using Watch):**
+   - HealthKit capability enabled with Background Delivery
+   - WKBackgroundModes (self-care, workout-processing) added to Watch App Info.plist
+3. Check that AirPods Pro/Max or Apple Watch are connected
+4. Verify correct `deviceType` in WorkoutConfig
+5. Enable debug mode to see sensor status:
    ```swift
    SonarFitSDK.configure(theme: theme, debugMode: true)
    ```
