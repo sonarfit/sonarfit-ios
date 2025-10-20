@@ -5,6 +5,18 @@ All notable changes to the SonarFit iOS SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-10-20
+
+### Fixed
+- Fixed Swift Package Manager dependency linking for binary frameworks
+- Added `SonarFitKitWrapper` target to properly declare dependencies between frameworks
+- Resolves "No such module 'SonarFitConnectivity'" and similar import errors
+
+### Technical Details
+SPM doesn't support adding dependencies to `.binaryTarget()` entries. This release adds a lightweight wrapper target that explicitly declares all framework dependencies, ensuring proper linking when integrating via SPM.
+
+**No code changes** - XCFrameworks are identical to v1.1.0. Only Package.swift structure updated.
+
 ## [1.1.0] - 2025-10-19
 
 ### Changed
