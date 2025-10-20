@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Simplified installation**: SDK now installs via Swift Package Manager with zero manual configuration
 - **One-step setup**: Add package dependency and you're done
 - Single `import SonarFitKit` statement provides access to all SDK functionality
+- **Theme system improvements**: Implemented surface-scoped color system to prevent contrast issues
 
 ### Improved
 - Installation process - streamlined to one package addition
 - Build times and dependency management
 - Integration documentation
+- Theme color system with better naming and surface-scoped design
 
 ### Requirements
 - **Platforms**: iOS 17.0+, watchOS 10.0+
@@ -23,12 +25,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Swift**: 5.9+
 
 ### Migration from v1.0.x
-- **No code changes required** - API is fully backward compatible
+
+#### Installation
 - **Installation**: Use SPM package dependency instead of manual framework embedding
 - **Import**: Still just `import SonarFitKit`
 
+#### Theme Changes (Breaking)
+If you customize the theme, update your color configuration:
+
+```swift
+// OLD (v1.0.x):
+SonarFitTheme.Colors(
+    background: UIColor.systemBackground,
+    primary: UIColor.systemBlue,
+    textPrimary: UIColor.label,           // ❌ Removed
+    textSecondary: UIColor.secondaryLabel, // ❌ Removed
+    accent: UIColor.systemOrange,          // ❌ Renamed
+    success: UIColor.systemGreen,          // ❌ Removed (unused)
+    error: UIColor.systemRed               // ❌ Removed (unused)
+)
+
+// NEW (v1.1.0+):
+SonarFitTheme.Colors(
+    background: UIColor.systemBackground,
+    primary: UIColor.systemBlue,
+    textOnBackground: UIColor.label,        // ✅ Paired with background
+    subtextOnBackground: UIColor.secondaryLabel, // ✅ Paired with background
+    textOnPrimary: UIColor.white,           // ✅ New: text on primary buttons
+    timerWarning: UIColor.systemOrange      // ✅ Renamed from 'accent'
+)
+```
+
+**Why the change?** Surface-scoped colors prevent contrast issues by explicitly pairing text colors with their surfaces (e.g., `textOnBackground` with `background`, `textOnPrimary` with `primary` buttons).
+
+**Default behavior**: If you don't customize themes, no changes needed - defaults work automatically.
+
 ### Breaking Changes
-- None - fully backward compatible with v1.0.x
+- **Theme API**: Color property names changed to surface-scoped system (see Migration section above)
+- Removed unused `success` and `error` colors
+- Renamed `accent` to `timerWarning` for clarity
 
 ## [1.0.2] - 2024-10-16
 

@@ -73,13 +73,12 @@ struct YourApp: App {
         }
 
         let theme = SonarFitTheme(colors: SonarFitTheme.Colors(
-            primary: UIColor.systemBlue,
-            accent: UIColor.systemOrange,
             background: UIColor.systemBackground,
-            textPrimary: UIColor.label,
-            textSecondary: UIColor.secondaryLabel,
-            success: UIColor.systemGreen,
-            error: UIColor.systemRed
+            primary: UIColor.systemBlue,
+            textOnBackground: UIColor.label,
+            subtextOnBackground: UIColor.secondaryLabel,
+            textOnPrimary: UIColor.white,
+            timerWarning: UIColor.systemOrange
         ))
         SonarFitSDK.configure(theme: theme, debugMode: true)
     }
@@ -318,13 +317,12 @@ let config = WorkoutConfig(
 
 ```swift
 let theme = SonarFitTheme(colors: SonarFitTheme.Colors(
-    primary: UIColor.systemIndigo,
-    accent: UIColor.systemPink,
     background: UIColor.systemBackground,
-    textPrimary: UIColor.label,
-    textSecondary: UIColor.secondaryLabel,
-    success: UIColor.systemGreen,
-    error: UIColor.systemRed
+    primary: UIColor.systemIndigo,
+    textOnBackground: UIColor.label,
+    subtextOnBackground: UIColor.secondaryLabel,
+    textOnPrimary: UIColor.white,
+    timerWarning: UIColor.systemPink
 ))
 
 SonarFitSDK.configure(theme: theme, debugMode: false)

@@ -22,28 +22,28 @@ let package = Package(
         .binaryTarget(
             name: "SonarFitCore",
             url: "\(baseURL)/SonarFitCore.xcframework.zip",
-            checksum: "445fd0a3a4d86a6979a1edbe0340a7f73c858ccdebf6c354e5adcc1abd4e8c5a"
+            checksum: "808e0ad14cb7cbc4497e7108cf68100e6fcd471ef662966c46566408760b4ae3"
         ),
 
         // Connectivity framework - shared by iOS and watchOS
         .binaryTarget(
             name: "SonarFitConnectivity",
             url: "\(baseURL)/SonarFitConnectivity.xcframework.zip",
-            checksum: "a115a15cb4cd06cbf9252a0c7fac638d7ebc2d3f934ffd5bb007e9ce2909c502"
+            checksum: "78d89f2f817169a62be50c768f917901b0f30719f8b187cc5451728c99c61153"
         ),
 
         // iOS UI framework
         .binaryTarget(
             name: "SonarFitUI",
             url: "\(baseURL)/SonarFitUI.xcframework.zip",
-            checksum: "436e020fa088c5453b73c86bb9ce4ff676666878e7dbb61853f34df6a4c5b5f9"
+            checksum: "3c39bf1977e62e3742a01eb2b77b0b57316976db2fea54702b2ea34305c6d317"
         ),
 
         // watchOS UI framework
         .binaryTarget(
             name: "SonarFitWatchUI",
             url: "\(baseURL)/SonarFitWatchUI.xcframework.zip",
-            checksum: "f0b357a489bcfe1b6fb6e814a177077be25bed4fbbe27f6c146c2b882f5f07c6"
+            checksum: "cc217ef78743b1a67eee980e344ba14e0f7c04bcee1a8ff1139d690f608c9d2f"
         ),
 
         // Main SDK umbrella framework with @_exported imports
@@ -51,7 +51,7 @@ let package = Package(
         .binaryTarget(
             name: "SonarFitKit",
             url: "\(baseURL)/SonarFitKit.xcframework.zip",
-            checksum: "d361c2c20591e30150c0437955964d8ae2abf7fffe240738f2fbcfc780aa9d90"
+            checksum: "c79de3c9a8defeb71f3fa2eb01a9cf8a02cf409e40fcf9ebddce9b7b3ae01763"
         )
     ]
 )
