@@ -296,7 +296,6 @@ WorkoutType.deadlift
 ```swift
 DeviceType.airpods  // AirPods Pro/Max
 DeviceType.watch    // Apple Watch
-DeviceType.none     // Auto-detect
 ```
 
 ### Workout Configuration
