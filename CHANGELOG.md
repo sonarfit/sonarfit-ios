@@ -5,6 +5,63 @@ All notable changes to the SonarFit iOS SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-01-20
+
+### Added
+- **Custom UI API**: Complete custom UI integration via `SonarFitWorkout` (SwiftUI ObservableObject) and `WorkoutEngine` (UIKit delegate pattern)
+- `SonarFit.createWorkout()` and `SonarFit.createEngine()` factory methods for custom UI development
+- `DeviceStatusDelegate` protocol for real-time device status monitoring (AirPods connection/in-ear, Watch paired/installed/reachable)
+- Device switching support - seamlessly switch between Watch and AirPods mid-workout
+- Push-based rest timer with automatic second-by-second updates via `didUpdateRestTime` delegate method
+- Device availability validation with specific error codes (1001: no devices available, 1002: Watch unavailable, 1003: AirPods unavailable)
+- Auto-reset from completed state - can start new workouts immediately after completion without manual reset
+- UIKit device switching pattern with `SonarFit.setupWatchHandlers()` for AirPods workouts
+
+### Changed
+- **Watch countdown timer improvements**: Now uses `.common` RunLoop mode to prevent pausing during screen sleep
+- ML model automatically reloads when switching between devices to handle different sample sizes
+- `WorkoutEngineDelegate` made `@MainActor` for guaranteed main thread callbacks
+- Rest timer now push-based instead of poll-based for more reliable updates
+
+### Fixed
+- UIKit device switching delegate wrapper pattern now properly unwraps for AirPods workouts
+- AirPods workout UI updates correctly after switching from Watch mid-workout
+- ML model shape mismatch resolved when switching between Watch (75 samples) and AirPods (150 samples)
+- Can now start new workout immediately after completion without manual reset call
+
+### Documentation
+- Added comprehensive `CUSTOM_UI_API.md` developer guide (100+ pages)
+- Documented all `WorkoutEngineDelegate` methods including iOS-only Watch communication methods
+- Added device availability validation documentation with error codes and handling patterns
+- Included 6 complete working examples covering SwiftUI and UIKit custom implementations
+
+### Breaking Changes
+- Rest timer updates now delivered via `didUpdateRestTime(remaining:)` delegate method instead of polling `session.restTimeRemaining`
+- `WorkoutEngineDelegate` protocol now requires `@MainActor` context (or use default implementation)
+- Device switching may cause brief ML model reload delay when transitioning between Watch and AirPods
+
+### Migration from v1.1.x
+
+#### Rest Timer (Breaking)
+```swift
+// OLD (v1.1.x) - polling pattern:
+Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+    let remaining = engine.session.restTimeRemaining
+    updateUI(remaining)
+}
+
+// NEW (v2.0.0) - push-based pattern:
+func workoutEngine(_ engine: WorkoutEngine, didUpdateRestTime remaining: Int) {
+    updateUI(remaining)  // Called automatically every second
+}
+```
+
+#### Custom UI Development
+If you were previously attempting to build custom UI by observing `WorkoutEngine` directly, migrate to the new official Custom UI API:
+- SwiftUI: Use `SonarFitWorkout` ObservableObject
+- UIKit: Use `WorkoutEngine` with `WorkoutEngineDelegate`
+- See `CUSTOM_UI_API.md` for complete migration guide and examples
+
 ## [1.1.1] - 2025-10-20
 
 ### Fixed

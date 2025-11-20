@@ -13,6 +13,7 @@ Transform any iOS app into a smart fitness coach with AI-powered motion tracking
 - **⏱️ Smart Rest Timers** - Built-in rest periods between sets
 - **🔄 Watch Connectivity** - Seamless iPhone-Watch workout sync
 - **🎨 Pre-built UI** - Ready-to-use SwiftUI workout interfaces
+- **🔧 Custom UI API** - Build fully custom workout interfaces with SwiftUI or UIKit
 
 ## 🚀 Quick Integration
 
@@ -40,7 +41,7 @@ Button("Start Workout") { showWorkout = true }
    ```
    https://github.com/sonarfit/sonarfit-ios
    ```
-3. Select **Version** → **Up to Next Major** → **1.1.0**
+3. Select **Version** → **Up to Next Major** → **2.0.0**
 4. Click **Add Package**
 5. Select **SonarFitKit** from the product list
 6. Click **Add Package**
