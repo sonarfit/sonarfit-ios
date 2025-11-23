@@ -41,7 +41,7 @@ Button("Start Workout") { showWorkout = true }
    ```
    https://github.com/sonarfit/sonarfit-ios
    ```
-3. Select **Version** → **Up to Next Major** → **2.0.0**
+3. Select **Version** → **Up to Next Major** → **2.0.1**
 4. Click **Add Package**
 5. Select **SonarFitKit** from the product list
 6. Click **Add Package**
