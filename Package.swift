@@ -22,7 +22,7 @@ let package = Package(
         .binaryTarget(
             name: "SonarFitCore",
             url: "\(baseURL)/SonarFitCore.xcframework.zip",
-            checksum: "3de9201de80d95a700fa0b6891e53ccea311e82b5331318ac9e2b9c7f90ab377"
+            checksum: "3900184d42717fc40fad96450db9c3852d2a23e61fb07a7134324fff62255123"
         ),
         .binaryTarget(
             name: "SonarFitConnectivity",
