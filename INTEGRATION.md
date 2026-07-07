@@ -2,6 +2,18 @@
 
 Complete guide to integrating the SonarFit SDK into your iOS and watchOS applications.
 
+## How long does it take?
+
+**A basic iOS integration typically takes 30–60 minutes:** add the Swift package,
+enable the required capabilities (motion permission, HealthKit, Background Modes — see
+the checklist below), initialize the SDK with your API key, and drop in one workout view.
+Add roughly **30 minutes** for an Apple Watch companion.
+
+Budget extra time for **on-device testing**: motion tracking needs a physical device with
+AirPods Pro/Max or an Apple Watch — it can't run in the Simulator. Requesting an API key
+(at [sonarfit.com](https://sonarfit.com)) is a separate, one-time step and isn't counted
+in the times above.
+
 ## Table of Contents
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -21,7 +33,7 @@ Complete guide to integrating the SonarFit SDK into your iOS and watchOS applica
    ```
    https://github.com/sonarfit/sonarfit-ios
    ```
-3. Select **Version** → **Up to Next Major** → **1.1.0**
+3. Select **Version** → **Up to Next Major** → **2.4.0**
 4. Click **Add Package**
 5. Select **SonarFitKit** from the product list
 6. Click **Add Package**
@@ -286,9 +298,14 @@ struct ContentView: View {
 ### Workout Types
 
 ```swift
+// AirPods Pro/Max or Apple Watch:
 WorkoutType.squat
-WorkoutType.benchpress
 WorkoutType.deadlift
+
+// Apple Watch only:
+WorkoutType.benchpress
+WorkoutType.shoulderPress
+WorkoutType.bicepCurl
 ```
 
 ### Device Types
@@ -338,8 +355,11 @@ struct WorkoutListView: View {
 
     let workouts: [(WorkoutType, String)] = [
         (.squat, "Squats"),
+        (.deadlift, "Deadlifts"),
+        // Apple Watch only:
         (.benchpress, "Bench Press"),
-        (.deadlift, "Deadlifts")
+        (.shoulderPress, "Shoulder Press"),
+        (.bicepCurl, "Bicep Curls")
     ]
 
     var body: some View {
@@ -492,7 +512,7 @@ If you're upgrading from v1.0.x:
 
 ### How to Upgrade
 
-1. Update package version to `1.1.0` in Xcode
+1. Update package version to `2.4.0` in Xcode
 2. Clean build folder
 3. Rebuild project
 
