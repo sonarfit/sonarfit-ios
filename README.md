@@ -1,14 +1,14 @@
 # SonarFit iOS SDK
 
-AI-powered fitness tracking and workout analysis SDK for iOS applications.
+Automatic rep counting from motion sensors — a fitness tracking SDK for iOS applications.
 
 ## 🏋️ What is SonarFit?
 
-Transform any iOS app into a smart fitness coach with AI-powered motion tracking. SonarFit automatically detects and counts exercise reps using AirPods Pro/Max or Apple Watch sensors, providing real-time feedback for squats, bench press, and deadlifts (more to follow).
+Add automatic rep counting to any iOS app. SonarFit detects and counts exercise reps from AirPods Pro/Max or Apple Watch motion sensors and gives real-time feedback. AirPods track squats and deadlifts; Apple Watch adds bench press, shoulder press, and bicep curls.
 
 ## ✨ Features
 
-- **🤖 AI-Powered Rep Counting** - Automatic rep detection and counting
+- **🔢 Automatic Rep Counting** - Real-time rep detection and counting
 - **📱 Multi-Device Support** - AirPods Pro, AirPods Max and Apple Watch integration
 - **⏱️ Smart Rest Timers** - Built-in rest periods between sets
 - **🔄 Watch Connectivity** - Seamless iPhone-Watch workout sync
@@ -41,7 +41,7 @@ Button("Start Workout") { showWorkout = true }
    ```
    https://github.com/sonarfit/sonarfit-ios
    ```
-3. Select **Version** → **Up to Next Major** → **2.0.1**
+3. Select **Version** → **Up to Next Major** → **2.4.0**
 4. Click **Add Package**
 5. Select **SonarFitKit** from the product list
 6. Click **Add Package**
@@ -63,9 +63,16 @@ import SonarFitKit  // Single import - that's all you need!
 
 ## 🛠️ Supported Exercises
 
-- Squats 
-- Bench Press 
+**AirPods Pro/Max:**
+- Squats
 - Deadlifts
+
+**Apple Watch:**
+- Squats
+- Deadlifts
+- Bench Press
+- Shoulder Press
+- Bicep Curls
 
 ## 📖 Get Started
 
