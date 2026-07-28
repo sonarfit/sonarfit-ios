@@ -9,10 +9,9 @@ the watch/phone, and detection works **offline**: your API key carries a signed 
 SDK verifies locally, so there's no activation call and a first launch with no connection
 still initialises and counts reps. Nothing is sent during a workout.
 
-What the SDK sends: an anonymous workout count for billing, and — **only if enabled under
-your integration agreement** — per-set raw motion recordings to improve detection accuracy
-(configurable, and off entirely on the **privacy tier**, which also drops the device
-identifier). See the [README](README.md#what-leaves-the-device) for the full breakdown.
+For billing, the SDK sends an anonymous workout count (no user identity). On the **privacy
+tier** that's an aggregate count with no device identifier. See the
+[README](README.md#what-leaves-the-device) for the breakdown.
 
 ## How long does it take?
 

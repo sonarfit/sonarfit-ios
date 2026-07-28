@@ -17,10 +17,9 @@ Add automatic rep counting to any iOS or watchOS app. SonarFit detects and count
 
 ### What leaves the device
 
-- **Usage summary (for billing):** a small, **anonymous** count of workouts plus the SDK version, with an anonymous device identifier so we can count unique users. No names, accounts, or health data.
-- **Raw motion recordings (optional, for detection improvement):** if enabled under your integration agreement, the SDK uploads per-set motion recordings to improve rep-detection accuracy. This is configurable per client and can be turned off — no personally-identifying data, and never during a workout.
+For billing, the SDK sends a small, **anonymous** usage summary — a count of workouts plus the SDK version, with an anonymous device identifier so we can count unique users. No names, no accounts, no health data, and nothing during a workout.
 
-> **Privacy-first app?** On the **privacy tier**, both are off: usage is an anonymous **aggregate** count with **no device identifier**, and **no raw motion is collected** — nothing identifying a user or device leaves the device. Ask us to enable it for your account.
+> **Privacy-first app?** On the **privacy tier** we drop the device identifier entirely — usage becomes an anonymous **aggregate** count, so nothing identifying a user or device leaves. Ask us to enable it for your account.
 
 ## Quick start — your own UI (headless)
 
