@@ -2,6 +2,16 @@
 
 Complete guide to integrating the SonarFit SDK into your iOS and watchOS applications.
 
+## On-device & offline
+
+Rep detection runs **entirely on-device** — motion sensing and counting happen locally on
+the watch/phone, and **no sensor data ever leaves the device**. It works **offline**: your
+API key carries a signed licence the SDK verifies locally, so there's no activation call and
+a first launch with no connection still initialises and counts reps. The only thing the SDK
+ever sends is an anonymous workout count for billing (no user identity, no raw motion, nothing
+during a workout). See the [README](README.md#on-device--offline--what-actually-leaves-the-device)
+for the exact "what leaves the device" breakdown.
+
 ## How long does it take?
 
 **A basic iOS integration typically takes 30–60 minutes:** add the Swift package,
@@ -12,7 +22,8 @@ Add roughly **30 minutes** for an Apple Watch companion.
 Budget extra time for **on-device testing**: motion tracking needs a physical device with
 AirPods Pro/Max or an Apple Watch — it can't run in the Simulator. Requesting an API key
 (at [sonarfit.com](https://sonarfit.com)) is a separate, one-time step and isn't counted
-in the times above.
+in the times above. The key works immediately, including offline — there's nothing to
+activate over the network.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -33,7 +44,7 @@ in the times above.
    ```
    https://github.com/sonarfit/sonarfit-ios
    ```
-3. Select **Version** → **Up to Next Major** → **2.4.0**
+3. Select **Version** → **Up to Next Major** → **2.5.0**
 4. Click **Add Package**
 5. Select **SonarFitKit** from the product list
 6. Click **Add Package**
@@ -76,6 +87,9 @@ import SonarFitKit
 struct YourApp: App {
 
     init() {
+        // The API key carries a signed offline licence — this verifies
+        // locally, so init succeeds with no network, even on a first launch
+        // in airplane mode. When online, the licence renews silently.
         SonarFitSDK.initialize(apiKey: "your_api_key_here") { success, error in
             if success {
                 print("SonarFit SDK initialized")
@@ -512,7 +526,7 @@ If you're upgrading from v1.0.x:
 
 ### How to Upgrade
 
-1. Update package version to `2.4.0` in Xcode
+1. Update package version to `2.5.0` in Xcode
 2. Clean build folder
 3. Rebuild project
 
@@ -532,4 +546,4 @@ That's it! Your existing code continues to work without any changes.
 
 ---
 
-© 2025 SonarFit. All rights reserved.
+© 2026 SonarFit. All rights reserved.

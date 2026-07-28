@@ -1,95 +1,100 @@
 # SonarFit iOS SDK
 
-Automatic rep counting from motion sensors — a fitness tracking SDK for iOS applications.
+Automatic rep counting from motion sensors — for iOS and Apple Watch apps. **On-device. Works offline. Your UI or ours.**
 
-## 🏋️ What is SonarFit?
+## What it does
 
-Add automatic rep counting to any iOS app. SonarFit detects and counts exercise reps from AirPods Pro/Max or Apple Watch motion sensors and gives real-time feedback. AirPods track squats and deadlifts; Apple Watch adds bench press, shoulder press, and bicep curls.
+Add automatic rep counting to any iOS or watchOS app. SonarFit detects and counts exercise reps from Apple Watch or AirPods Pro/Max motion sensors, in real time. Drop in our workout UI, or run it headless and feed the live rep count into your own screens.
 
-## ✨ Features
+- **Apple Watch** — squats, deadlifts, bench press, shoulder press, bicep curls
+- **AirPods Pro/Max** — squats, deadlifts
 
-- **🔢 Automatic Rep Counting** - Real-time rep detection and counting
-- **📱 Multi-Device Support** - AirPods Pro, AirPods Max and Apple Watch integration
-- **⏱️ Smart Rest Timers** - Built-in rest periods between sets
-- **🔄 Watch Connectivity** - Seamless iPhone-Watch workout sync
-- **🎨 Pre-built UI** - Ready-to-use SwiftUI workout interfaces
-- **🔧 Custom UI API** - Build fully custom workout interfaces with SwiftUI or UIKit
+## On-device & offline
 
-## 🚀 Quick Integration
+**Detection is 100% on-device.** Motion sensing and rep counting run locally on the watch/phone. Raw sensor data **never leaves the device**, and detection has **no network dependency** — it works in a basement gym with no signal.
+
+**It works offline from the very first launch.** Your API key contains a signed licence the SDK verifies locally — there's no activation call to make. A brand-new install in airplane mode initialises and counts reps. When the device is next online, the licence renews silently in the background (valid 90 days between renewals, so an offline stretch never interrupts anyone).
+
+### What the SDK sends
+
+For usage-based billing, the SDK records a small, **anonymous** usage summary — a count of how many workouts ran, plus the SDK version — with an anonymous device identifier so we can count unique users. **No personal data, no account info, no raw motion data, and nothing is sent during a workout.** It's a background call you can inspect with any proxy.
+
+| Never leaves the device | Anonymous usage summary (background, when online) |
+|---|---|
+| Raw motion / IMU data | Workout count + SDK version |
+| Names, emails, health/account data | An anonymous device id (for unique-user counts) |
+| Anything mid-workout | *(that's all)* |
+
+> **Fully offline app with no backend of its own?** We can run usage counting in aggregate with **no device identifier at all** — talk to us about the privacy tier.
+
+## Quick start — your own UI (headless)
+
+No SonarFit UI. Create a workout, observe the live rep count, read the result.
+
+```swift
+import SonarFitKit
+
+// Once, at launch — the key carries the offline licence.
+SonarFitSDK.initialize(apiKey: "sk_live_…") { success, error in }
+
+// Per exercise: your UI, our counting.
+let workout = try SonarFit.createWorkout(
+    config: WorkoutConfig(workoutType: .squat, sets: 1, reps: 10, deviceType: .watch)
+)
+workout.start()
+
+// SwiftUI: observe the published rep count as it increments.
+Text("\(workout.currentSetRepsCompleted) / \(workout.config.reps)")
+
+// Or UIKit / any framework: conform to the delegate for rep + set-complete callbacks.
+```
+
+Pass a target `reps` and the SDK stops counting once it's hit — no post-set over-reporting. You drive everything else in your own flow.
+
+## Quick start — pre-built UI
+
+Prefer a ready-made workout screen? One modifier:
 
 ```swift
 Button("Start Workout") { showWorkout = true }
 .sonarFitWorkout(
-    config: WorkoutConfig(
-        workoutType: .squat,
-        sets: 3,
-        reps: 10,
-        deviceType: .airpods
-    ),
+    config: WorkoutConfig(workoutType: .squat, sets: 3, reps: 10, deviceType: .airpods),
     isPresented: $showWorkout
 ) { result in
     print("Workout completed!")
 }
 ```
 
-## 📦 Installation
+## Installation
 
-### Swift Package Manager (Recommended)
+Swift Package Manager:
 
-1. In Xcode, select **File → Add Package Dependencies...**
-2. Enter the repository URL:
-   ```
-   https://github.com/sonarfit/sonarfit-ios
-   ```
-3. Select **Version** → **Up to Next Major** → **2.4.0**
-4. Click **Add Package**
-5. Select **SonarFitKit** from the product list
-6. Click **Add Package**
-
-That's it! The SDK and all dependencies are automatically configured.
-
-### Import
+1. Xcode → **File → Add Package Dependencies…**
+2. URL: `https://github.com/sonarfit/sonarfit-ios`
+3. **Up to Next Major** → **2.5.0**
+4. Add **SonarFitKit**.
 
 ```swift
-import SonarFitKit  // Single import - that's all you need!
+import SonarFitKit   // single import, all modules included
 ```
 
-## 📋 Requirements
+## Requirements
 
-- **iOS 17.0+** / **watchOS 10.0+**
-- **Xcode 16.0+**
-- **Swift 5.9+**
-- **AirPods Pro/Max or Apple Watch** (for motion tracking)
+- **iOS 17.0+** / **watchOS 10.0+**, **Xcode 16.0+**, **Swift 5.9+**
+- **Apple Watch or AirPods Pro/Max** for motion tracking (a physical device — motion isn't available in the Simulator)
+- HealthKit + Background Modes capabilities ([checklist in the Integration Guide](INTEGRATION.md))
 
-## 🛠️ Supported Exercises
+## Get started
 
-**AirPods Pro/Max:**
-- Squats
-- Deadlifts
+- 👉 **[Integration Guide](INTEGRATION.md)** — full setup, headless + pre-built, watchOS companion
+- 👉 **[Examples](Examples/)** — copy-paste SwiftUI and UIKit
+- 📚 **[API Reference](https://sonarfit.github.io/sonarfit-ios/)**
 
-**Apple Watch:**
-- Squats
-- Deadlifts
-- Bench Press
-- Shoulder Press
-- Bicep Curls
+## Support
 
-## 📖 Get Started
+- 📧 support@sonarfit.com
+- 🐛 [GitHub Issues](https://github.com/sonarfit/sonarfit-ios/issues)
 
-**Ready to integrate?** Follow our complete setup guide:
+## License
 
-👉 **[Integration Guide](INTEGRATION.md)** - Everything you need to get started
-
-**Want to see it in action?** Check out working examples:
-
-👉 **[Example Code](Examples/)** - Copy-paste ready code
-
-## 📞 Support & Resources
-
-- 🐛 **Issues**: [GitHub Issues](https://github.com/sonarfit/sonarfit-ios/issues)
-- 📚 **Documentation**: [Complete API Reference](https://sonarfit.github.io/sonarfit-ios/)
-- 📧 **Support**: support@sonarfit.com
-
-## 📄 License
-
-© 2025 SonarFit. All rights reserved.
+© 2026 SonarFit. All rights reserved. Commercial SDK — [get a key](https://sonarfit.com).

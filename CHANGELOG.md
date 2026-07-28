@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.5.0] - 2026-07-28
+
+### Added
+- **Offline-first licensing.** The SDK now initialises and runs fully offline — no network call at startup. Your API key carries a signed licence that's verified on-device, so a first launch with no connection (a gym, airplane mode) still works. It renews silently when a connection is available.
+- **Privacy tier.** Usage can be metered as an anonymous aggregate count with **no device identifier** — for privacy-first apps where nothing identifying a user or device should leave the device. Configurable per client.
+
+### Fixed
+- Apple Watch: the first workout after a fresh install now detects reps reliably — previously a config-sync race could require restarting the workout.
+
 ## [2.4.2] - 2026-07-19
 
 ### Changed
