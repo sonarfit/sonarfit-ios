@@ -11,21 +11,16 @@ Add automatic rep counting to any iOS or watchOS app. SonarFit detects and count
 
 ## On-device & offline
 
-**Detection is 100% on-device.** Motion sensing and rep counting run locally on the watch/phone. Raw sensor data **never leaves the device**, and detection has **no network dependency** — it works in a basement gym with no signal.
+**Detection is 100% on-device.** Motion sensing and rep counting run locally on the watch/phone, and detection has **no network dependency** — it works in a basement gym with no signal, and nothing is sent *during* a workout.
 
 **It works offline from the very first launch.** Your API key contains a signed licence the SDK verifies locally — there's no activation call to make. A brand-new install in airplane mode initialises and counts reps. When the device is next online, the licence renews silently in the background (valid 90 days between renewals, so an offline stretch never interrupts anyone).
 
-### What the SDK sends
+### What leaves the device
 
-For usage-based billing, the SDK records a small, **anonymous** usage summary — a count of how many workouts ran, plus the SDK version — with an anonymous device identifier so we can count unique users. **No personal data, no account info, no raw motion data, and nothing is sent during a workout.** It's a background call you can inspect with any proxy.
+- **Usage summary (for billing):** a small, **anonymous** count of workouts plus the SDK version, with an anonymous device identifier so we can count unique users. No names, accounts, or health data.
+- **Raw motion recordings (optional, for detection improvement):** if enabled under your integration agreement, the SDK uploads per-set motion recordings to improve rep-detection accuracy. This is configurable per client and can be turned off — no personally-identifying data, and never during a workout.
 
-| Never leaves the device | Anonymous usage summary (background, when online) |
-|---|---|
-| Raw motion / IMU data | Workout count + SDK version |
-| Names, emails, health/account data | An anonymous device id (for unique-user counts) |
-| Anything mid-workout | *(that's all)* |
-
-> **Fully offline app with no backend of its own?** We can run usage counting in aggregate with **no device identifier at all** — talk to us about the privacy tier.
+> **Privacy-first app?** On the **privacy tier**, both are off: usage is an anonymous **aggregate** count with **no device identifier**, and **no raw motion is collected** — nothing identifying a user or device leaves the device. Ask us to enable it for your account.
 
 ## Quick start — your own UI (headless)
 

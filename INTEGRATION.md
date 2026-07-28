@@ -5,12 +5,14 @@ Complete guide to integrating the SonarFit SDK into your iOS and watchOS applica
 ## On-device & offline
 
 Rep detection runs **entirely on-device** — motion sensing and counting happen locally on
-the watch/phone, and **no sensor data ever leaves the device**. It works **offline**: your
-API key carries a signed licence the SDK verifies locally, so there's no activation call and
-a first launch with no connection still initialises and counts reps. The only thing the SDK
-ever sends is an anonymous workout count for billing (no user identity, no raw motion, nothing
-during a workout). See the [README](README.md#on-device--offline--what-actually-leaves-the-device)
-for the exact "what leaves the device" breakdown.
+the watch/phone, and detection works **offline**: your API key carries a signed licence the
+SDK verifies locally, so there's no activation call and a first launch with no connection
+still initialises and counts reps. Nothing is sent during a workout.
+
+What the SDK sends: an anonymous workout count for billing, and — **only if enabled under
+your integration agreement** — per-set raw motion recordings to improve detection accuracy
+(configurable, and off entirely on the **privacy tier**, which also drops the device
+identifier). See the [README](README.md#what-leaves-the-device) for the full breakdown.
 
 ## How long does it take?
 
