@@ -308,6 +308,121 @@ struct ContentView: View {
 - Rest timers
 - Workout summary
 
+## Running inside your own HKWorkoutSession (host-session mode)
+
+If your **watch app already owns an `HKWorkoutSession`** (heart rate, active energy, saving to
+Apple Fitness), SonarFit can run inside it. watchOS allows one active workout session per
+process, so in this mode SonarFit never creates, pauses, ends or takes the delegate of any
+session, writes nothing to HealthKit, and does not use session mirroring. Your session supplies
+the background wake lock; SonarFit talks to the phone over WatchConnectivity.
+
+**Watch target** — once at launch, before `enableSonarFitWorkouts()`:
+
+```swift
+SonarFit.configureWatchSession(.hostProvided(current: { MyWorkoutManager.shared.session }))
+```
+
+Optional but recommended, from your own `HKWorkoutSessionDelegate`, so SonarFit can flush an
+active set if you pause or end mid-set:
+
+```swift
+func workoutSession(_ session: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState,
+                    from fromState: HKWorkoutSessionState, date: Date) {
+    SonarFit.hostWorkoutSession(session, didChangeTo: toState, from: fromState)
+}
+```
+
+**iOS target** — declare the same ownership at init:
+
+```swift
+SonarFitSDK.initialize(apiKey: "sk_live_...", watchSessionOwnership: .hostProvided) { ok, error in }
+```
+
+Rules in this mode:
+- Your session must be **running** when the user starts a SonarFit set. Otherwise Start is
+  refused with `SonarFitWatchSessionError.hostSessionNotRunning` (published on the watch as
+  `WatchWorkoutSessionManager.shared.lastStartError`, logged on the phone as a watch error).
+- Workouts start **on the watch**. `SonarFit.launchWatchApp(config:)` /
+  `launchWatchAndStart()` throw `WatchLaunchError.unsupportedInHostSessionMode`.
+- Configure **both** targets; the phone logs a warning at the start handshake if they differ.
+- Leave the mode at its default (`.sdkOwned`) if SonarFit should manage the session itself.
+
+### Headless rep detection (your Watch UI, SonarFit as a rep stream)
+
+If your Watch app owns the whole workout flow — sets, rest timers, its own screens — use headless
+detection instead of `enableSonarFitWorkouts()`. SonarFit shows no UI and keeps no set or rest
+state; it counts reps between your start and your stop. It runs inside a workout session: your
+own (host-session mode, above) or one SonarFit opens for you (see "If your Watch app does not own
+a workout session" below).
+
+```swift
+// Watch target, per set
+let detection = try SonarFit.startRepDetection(
+    exercise: .bicepCurl,          // SonarFit.supportedWatchExercises; others throw .unsupportedExercise
+    targetReps: 10,                // required: the set's target from your UI
+    onRep: { count in viewModel.reps = count },          // running count, main queue
+    onTargetReached: { viewModel.completeSet() }         // optional auto-complete
+)
+
+let result = detection.stop()      // when you decide the set is done
+result.reps                        // the set's rep count — a rep in flight at the tap is included,
+                                   // nothing after the tap ever is
+detection.cancel()                 // or discard the set entirely
+```
+
+One detection at a time: starting another before `stop()` or `cancel()` throws
+`detectionAlreadyActive`. Supported exercises today: squat, deadlift, bench press, shoulder press,
+bicep curl.
+
+**Goals instead of a bare number.** If your programme uses a rep range, or the set has no
+target, pass a goal:
+
+```swift
+try SonarFit.startRepDetection(exercise: .squat, goal: .range(lo: 8, hi: 12), onRep: { … })
+try SonarFit.startRepDetection(exercise: .squat, goal: .open, onRep: { … })   // count until stop()
+```
+
+`.fixed(n)` is identical to `targetReps: n`. With a range, the count keeps climbing past the low
+end and stops at the high end; `onTargetReached` fires at the low end. `.open` counts until you
+stop. The goal tells SonarFit when the set is expected to end; it never changes which reps are
+counted.
+
+**If your Watch app does not own a workout session.** Leave the session mode at its default and
+bracket your sets with a headless workout. SonarFit starts its own `HKWorkoutSession` (the
+background wake lock, heart rate, and the Fitness save) and one bracket is one workout:
+
+```swift
+try SonarFit.startHeadlessWorkout()                          // once, when the user begins
+let set = try SonarFit.startRepDetection(exercise: .squat, goal: .fixed(10), onRep: { … })
+… set.stop() … more sets …
+try SonarFit.endHeadlessWorkout(save: true)                  // once, when the user finishes (false = discard)
+```
+
+`startRepDetection` throws `headlessWorkoutNotStarted` outside a bracket in this mode, and the
+two bracket calls throw `wrongSessionMode` in host-session mode, where your own running session
+is the bracket.
+
+Optionally, on iOS, observe the same stream for your phone UI:
+
+```swift
+SonarFit.observeHeadlessDetection { event in
+    switch event {
+    case .setStarted(let exercise, let targetReps, _): …
+    case .rep(let count, _):                            …
+    case .setEnded(let result, _):                      … // result.reps
+    default: break
+    }
+}
+```
+
+### Native Watch app with a Flutter (or React Native) phone app
+
+Headless watch detection lives entirely in the native Watch target, which links this Swift
+package (`SonarFitKit`, watchOS 10+) and uses either path above. The phone app, whatever it is
+written in, only has to initialise the SDK with the same key so licensing and usage metering
+work: Flutter `SonarFit.initialize(apiKey)` from the `sonarfit_flutter` plugin (2.6.0+), which
+also exposes `SonarFit.headlessEvents` if the phone UI should mirror the sets live.
+
 ## Configuration
 
 ### Workout Types
