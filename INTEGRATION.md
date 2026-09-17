@@ -423,6 +423,23 @@ written in, only has to initialise the SDK with the same key so licensing and us
 work: Flutter `SonarFit.initialize(apiKey)` from the `sonarfit_flutter` plugin (2.6.0+), which
 also exposes `SonarFit.headlessEvents` if the phone UI should mirror the sets live.
 
+Checklist for this shape:
+
+**Watch target (Swift)**
+1. Add this package to the Watch target and `import SonarFitKit`.
+2. `SonarFitSDK.initialize(apiKey:)` at launch, with the same key as the phone.
+3. Pick the session mode once: `SonarFit.configureWatchSession(.hostProvided(current: { yourSession }))`
+   if your app owns the `HKWorkoutSession`; nothing to configure if SonarFit should own it.
+4. Per set: `SonarFit.startHeadlessWorkout()` (SonarFit-owned only), then
+   `SonarFit.startRepDetection(exercise:goal:onRep:onTargetReached:)`; on finish, `stop()` on
+   the returned handle, then `SonarFit.endHeadlessWorkout(save:)` (SonarFit-owned only).
+5. The watch shows and buzzes its own count as each rep completes.
+
+**Phone app (Flutter)**
+1. `SonarFit.initialize(apiKey)` from `sonarfit_flutter` at launch. That is all the phone must
+   do: licensing, usage metering and the upload of each set's recording happen inside the SDK.
+2. Optionally listen to `SonarFit.headlessEvents` to mirror set started, live count and set ended.
+
 ## Configuration
 
 ### Workout Types
