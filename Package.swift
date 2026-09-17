@@ -22,27 +22,27 @@ let package = Package(
         .binaryTarget(
             name: "SonarFitCore",
             url: "\(baseURL)/SonarFitCore.xcframework.zip",
-            checksum: "8bcfebbfad1ccf2551f6d45ae220865b3fd8c91d93ce608ec1f621fc415f86b2"
+            checksum: "d71c6951d324d8202b455534544c5465cf97e1ada55e843d4a379a80f355eb1c"
         ),
         .binaryTarget(
             name: "SonarFitConnectivity",
             url: "\(baseURL)/SonarFitConnectivity.xcframework.zip",
-            checksum: "3f16c7fca68f8b5769a70fdbee8a06d81fb03ed59c5241be6787e8b24be68612"
+            checksum: "d4fb98b51f8133b569fc8cb2a6e8531e77e5cd60d8bf0c43e5f6aa784f0ed1fd"
         ),
         .binaryTarget(
             name: "SonarFitUI",
             url: "\(baseURL)/SonarFitUI.xcframework.zip",
-            checksum: "1ff7d7c149d033cf22c7bd8e497c16c90f8dcf04cb74014587e54cf0f618e11a"
+            checksum: "5ca639a6f00030b6352c1c1548ecbbeb407a42fdb67f70ab2d490aab23ca452c"
         ),
         .binaryTarget(
             name: "SonarFitWatchUI",
             url: "\(baseURL)/SonarFitWatchUI.xcframework.zip",
-            checksum: "742b686aadbdc83cb4c2a2f159225e3354e1681f844791130d53964264db9b3c"
+            checksum: "fcb2688c5378dbd6d0a078ebcfbb6fd4ab8d28a7cf7e6117cce45b1826a9f024"
         ),
         .binaryTarget(
             name: "SonarFitKit",
             url: "\(baseURL)/SonarFitKit.xcframework.zip",
-            checksum: "7d4acb950360f2a625dcd25e8bed746c2dd9bcecc494853be9e1d003bce9ea0b"
+            checksum: "67bfa05a8b6fe5856e933fdd62f1a38849490e1e24adbe952a7ed0e0af3ff8f3"
         ),
 
         // Wrapper target that declares dependencies
