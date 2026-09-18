@@ -308,6 +308,18 @@ struct ContentView: View {
 - Rest timers
 - Workout summary
 
+#### When does the rest timer start?
+
+In the pre-built UI, a set closes and the rest countdown starts **when the rep count reaches the
+target you configured** (`reps` in `WorkoutConfig`), or when you call `endSetEarly()`. The timer
+runs for `restTime` seconds, pushes a per-second update, and can be paused, resumed or skipped.
+
+The SDK does **not** watch for the lifter standing still: there is no idle detection, and nothing
+starts a rest period on its own. If you want rest to begin when someone stops lifting rather than
+when they hit a number, call `endSetEarly()` from your own logic.
+
+In headless mode there is no rest timer at all — see below.
+
 ## Running inside your own HKWorkoutSession (host-session mode)
 
 If your **watch app already owns an `HKWorkoutSession`** (heart rate, active energy, saving to
@@ -351,7 +363,8 @@ Rules in this mode:
 
 If your Watch app owns the whole workout flow — sets, rest timers, its own screens — use headless
 detection instead of `enableSonarFitWorkouts()`. SonarFit shows no UI and keeps no set or rest
-state; it counts reps between your start and your stop. It runs inside a workout session: your
+state: there is no rest timer and no idle detection, and nothing ends a set but you. It counts
+reps between your start and your stop. It runs inside a workout session: your
 own (host-session mode, above) or one SonarFit opens for you (see "If your Watch app does not own
 a workout session" below).
 
