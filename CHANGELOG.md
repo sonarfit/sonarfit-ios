@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Headless rep detection on Apple Watch.** Keep your own watch screen and receive SonarFit as a rep stream: set started, live count, set ended.
 - **Runs in your workout session or its own.** SonarFit can count inside your app's existing `HKWorkoutSession`, so heart rate, energy and the Fitness save stay yours, or it can manage the session itself.
 - **Live set events on the phone.** `observeHeadlessDetection` on iOS and `headlessEvents` in the Flutter plugin mirror the watch's set on the phone.
-- **Rep goals.** Start a set with a fixed target, a range, or open-ended counting until the lifter stops.
+- **Rep goals.** Start a set with a fixed target, a range, or open-ended — counting carries on until your app ends the set.
 - **On-wrist count.** The watch shows and buzzes each rep the moment it completes.
 ## [2.5.2] - 2026-08-03
 

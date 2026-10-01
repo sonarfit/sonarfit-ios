@@ -362,11 +362,14 @@ Rules in this mode:
 ### Headless rep detection (your Watch UI, SonarFit as a rep stream)
 
 If your Watch app owns the whole workout flow — sets, rest timers, its own screens — use headless
-detection instead of `enableSonarFitWorkouts()`. SonarFit shows no UI and keeps no set or rest
-state: there is no rest timer and no idle detection, and nothing ends a set but you. It counts
-reps between your start and your stop. It runs inside a workout session: your
+detection instead of `enableSonarFitWorkouts()`. SonarFit shows no UI and keeps no rest state:
+there is no rest timer, and your app runs the rest. It counts reps between your start and your
+stop — or, if you ask it to, until it sees the set end. It runs inside a workout session: your
 own (host-session mode, above) or one SonarFit opens for you (see "If your Watch app does not own
 a workout session" below).
+
+Start detection when your set screen appears: the walk to the weights, picking them up and the
+lift into the start position are not counted.
 
 ```swift
 // Watch target, per set
@@ -397,8 +400,42 @@ try SonarFit.startRepDetection(exercise: .squat, goal: .open, onRep: { … })   
 
 `.fixed(n)` is identical to `targetReps: n`. With a range, the count keeps climbing past the low
 end and stops at the high end; `onTargetReached` fires at the low end. `.open` counts until you
-stop. The goal tells SonarFit when the set is expected to end; it never changes which reps are
-counted.
+stop, or until the set ends by itself if you pass `onSetEnded` (below). The goal tells SonarFit
+when the set is expected to end; it never changes which reps are counted.
+
+**A confidence for every rep, and the set ending by itself.** Two optional closures on the same
+call, for apps that count from their own screen:
+
+```swift
+let detection = try SonarFit.startRepDetection(
+    exercise: .shoulderPress, goal: .open,
+    onRep: { count in viewModel.reps = count },
+    onRepEvent: { event in
+        // event.kind: .counted, .updated, .withdrawn, .restored
+        // event.at: the rep's time, seconds after the set started
+        // event.confidence: 0–1, how sure SonarFit is this was a rep of this set
+        // event.standing: reps counted and not withdrawn
+    },
+    onSetEnded: { result in
+        viewModel.finishSet(reps: result.reps, lastRepAt: result.lastRepAt)
+    }
+)
+```
+
+- `onRepEvent` streams each rep with a confidence. The first rep of a set is provisional — a
+  lift into position can look like one — and its confidence rises when the next reps match it or
+  falls when they don't; a rep the set no longer believes is withdrawn (and restored if that
+  changes). The running count from `onRep` never goes down; this stream tells you which of those
+  reps SonarFit still believes, and how strongly. Choose your own threshold.
+- `onSetEnded` fires when the lifter has finished: their rhythm has run out, the wrist has left
+  the set for good (rack, lap, walking away) or the weights have gone down — typically 5–10 s
+  after the last rep. The set is stopped when it fires; `stop()` afterwards returns the same
+  result. Without it, a set ends only on `stop()`.
+
+`SonarFitSetResult` carries the confirmed count (`reps` — a final pass over the whole set, which
+can differ from the running count), `endReason` (`.stopped`, `.rhythm`, `.posture`,
+`.weightsDown`), `lastRepAt` (seconds after `startedAt` — where a rest timer should start) and
+`repRecords` (every counted rep with its final confidence).
 
 **If your Watch app does not own a workout session.** Leave the session mode at its default and
 bracket your sets with a headless workout. SonarFit starts its own `HKWorkoutSession` (the
@@ -422,11 +459,18 @@ SonarFit.observeHeadlessDetection { event in
     switch event {
     case .setStarted(let exercise, let targetReps, _): …
     case .rep(let count, _):                            …
-    case .setEnded(let result, _):                      … // result.reps
+    case .repEvent(let e):                              … // e.kind, e.at, e.confidence, e.standing
+    case .setEnded(let result, _):                      … // result.reps, .endReason, .lastRepAt, .repRecords
     default: break
     }
 }
 ```
+
+**If your app already uses WatchConnectivity.** Nothing to do. If your app has set
+`WCSession.default.delegate` on either device, SonarFit joins that session rather than taking it
+over: your delegate stays yours, every message your app sends or receives arrives exactly as
+before, and SonarFit's own traffic never reaches your code. Apps without their own
+WatchConnectivity are unaffected.
 
 ### Native Watch app with a Flutter (or React Native) phone app
 
@@ -444,8 +488,9 @@ Checklist for this shape:
 3. Pick the session mode once: `SonarFit.configureWatchSession(.hostProvided(current: { yourSession }))`
    if your app owns the `HKWorkoutSession`; nothing to configure if SonarFit should own it.
 4. Per set: `SonarFit.startHeadlessWorkout()` (SonarFit-owned only), then
-   `SonarFit.startRepDetection(exercise:goal:onRep:onTargetReached:)`; on finish, `stop()` on
-   the returned handle, then `SonarFit.endHeadlessWorkout(save:)` (SonarFit-owned only).
+   `SonarFit.startRepDetection(exercise:goal:onRep:onTargetReached:onRepEvent:onSetEnded:)`; on
+   finish, `stop()` on the returned handle (or let `onSetEnded` end it), then
+   `SonarFit.endHeadlessWorkout(save:)` (SonarFit-owned only).
 5. The watch shows and buzzes its own count as each rep completes.
 
 **Phone app (Flutter)**

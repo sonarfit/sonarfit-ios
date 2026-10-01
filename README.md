@@ -45,6 +45,8 @@ Text("\(workout.currentSetRepsCompleted) / \(workout.config.reps)")
 
 Pass a target `reps` and the SDK stops counting once it's hit — no post-set over-reporting. You drive everything else in your own flow.
 
+On the watch, `SonarFit.startRepDetection` gives you the same counting as a rep stream inside your own Watch app — with a confidence for every rep, and the set ending by itself when the lifter is done (`onSetEnded`). See the [Integration Guide](INTEGRATION.md#headless-rep-detection-your-watch-ui-sonarfit-as-a-rep-stream).
+
 ## Quick start — pre-built UI
 
 Prefer a ready-made workout screen? One modifier:
