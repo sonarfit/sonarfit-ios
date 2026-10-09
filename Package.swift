@@ -1,7 +1,7 @@
 // swift-tools-version: 5.9
 import PackageDescription
 
-let version = "2.7.0"
+let version = "2.7.2"
 let baseURL = "https://github.com/sonarfit/sonarfit-ios/releases/download/v\(version)"
 
 let package = Package(
@@ -22,27 +22,27 @@ let package = Package(
         .binaryTarget(
             name: "SonarFitCore",
             url: "\(baseURL)/SonarFitCore.xcframework.zip",
-            checksum: "c431d5eed39b52bb15ff17dbe7473f1c80d4a0b63a4c5c622a13d908dfd2a63c"
+            checksum: "44f12d0dcd7626f3a1c2aaecf77a38289b7f7547fbe930b74f4221cc454b91c8"
         ),
         .binaryTarget(
             name: "SonarFitConnectivity",
             url: "\(baseURL)/SonarFitConnectivity.xcframework.zip",
-            checksum: "b6d62f9775c198c00f16821719c367267b243258d49d054ef9077262cad8e3d1"
+            checksum: "a458d5e935cfd9f83a3bc13a0eaad1c92d423cc40aba4e5dab810e727982a7f3"
         ),
         .binaryTarget(
             name: "SonarFitUI",
             url: "\(baseURL)/SonarFitUI.xcframework.zip",
-            checksum: "d3a91d66bbc4fbdb5d6936533c0cade78ec5b31bfeade31ecf3ab0ed85043224"
+            checksum: "75f11e5b01ddd2713e0ac274597dc8492cf8e42ae5b474829d9ebfb47b01c3fd"
         ),
         .binaryTarget(
             name: "SonarFitWatchUI",
             url: "\(baseURL)/SonarFitWatchUI.xcframework.zip",
-            checksum: "700248e3a9f6a9bd7740ce2e4737b7dd4b8dc7a7ecae7c1ce432b722a47d7d8b"
+            checksum: "bee7ae49a269a7e520902cf14367540b18712df76ea2399247c71d604b014924"
         ),
         .binaryTarget(
             name: "SonarFitKit",
             url: "\(baseURL)/SonarFitKit.xcframework.zip",
-            checksum: "0298d37fa9431aace538103ef059f41c4ab851352d06b2155699a7cf5c07b872"
+            checksum: "5d27cd4961673da5ffc4202ea96bf836b8306bff80d52aef67195c70c8ff154e"
         ),
 
         // Wrapper target that declares dependencies

@@ -324,9 +324,9 @@ In headless mode there is no rest timer at all — see below.
 
 If your **watch app already owns an `HKWorkoutSession`** (heart rate, active energy, saving to
 Apple Fitness), SonarFit can run inside it. watchOS allows one active workout session per
-process, so in this mode SonarFit never creates, pauses, ends or takes the delegate of any
-session, writes nothing to HealthKit, and does not use session mirroring. Your session supplies
-the background wake lock; SonarFit talks to the phone over WatchConnectivity.
+process, so in this mode SonarFit never creates, pauses or ends any session, writes nothing to
+HealthKit, and does not use session mirroring. Your session supplies the background wake lock;
+SonarFit talks to the phone over WatchConnectivity.
 
 **Watch target** — once at launch, before `enableSonarFitWorkouts()`:
 
@@ -334,15 +334,10 @@ the background wake lock; SonarFit talks to the phone over WatchConnectivity.
 SonarFit.configureWatchSession(.hostProvided(current: { MyWorkoutManager.shared.session }))
 ```
 
-Optional but recommended, from your own `HKWorkoutSessionDelegate`, so SonarFit can flush an
-active set if you pause or end mid-set:
-
-```swift
-func workoutSession(_ session: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState,
-                    from fromState: HKWorkoutSessionState, date: Date) {
-    SonarFit.hostWorkoutSession(session, didChangeTo: toState, from: fromState)
-}
-```
+That is all. SonarFit listens to your session's state changes itself (since 2.7.2): it sits in
+front of your session's delegate and passes every callback to your delegate first and unchanged.
+You do not need to forward anything. (`SonarFit.hostWorkoutSession(_:didChangeTo:from:)` still
+exists for apps that already call it; it is ignored for a session SonarFit observes.)
 
 **iOS target** — declare the same ownership at init:
 
