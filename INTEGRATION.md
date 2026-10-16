@@ -506,6 +506,7 @@ WorkoutType.deadlift
 WorkoutType.benchpress
 WorkoutType.shoulderPress
 WorkoutType.bicepCurl
+WorkoutType.row              // bent-over row
 ```
 
 ### Device Types
@@ -559,7 +560,8 @@ struct WorkoutListView: View {
         // Apple Watch only:
         (.benchpress, "Bench Press"),
         (.shoulderPress, "Shoulder Press"),
-        (.bicepCurl, "Bicep Curls")
+        (.bicepCurl, "Bicep Curls"),
+        (.row, "Bent-Over Rows")
     ]
 
     var body: some View {

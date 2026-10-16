@@ -6,7 +6,7 @@ Automatic rep counting from motion sensors — for iOS and Apple Watch apps. **O
 
 Add automatic rep counting to any iOS or watchOS app. SonarFit detects and counts exercise reps from Apple Watch or AirPods Pro/Max motion sensors, in real time. Drop in our workout UI, or run it headless and feed the live rep count into your own screens.
 
-- **Apple Watch** — squats, deadlifts, bench press, shoulder press, bicep curls
+- **Apple Watch** — squats, deadlifts, bench press, shoulder press, bicep curls, bent-over rows
 - **AirPods Pro/Max** — squats, deadlifts
 
 ## On-device & offline
